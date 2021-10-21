@@ -4,12 +4,30 @@ defmodule FwfAsyncTest do
 
     test "enables flag" do
       name = "enables flag"
+
       :timer.sleep(1000)
+      {:ok, _} = FunWithFlags.Store.Cache.get(:foo)
+
       IO.puts("(#{name} - #{now()}) enabling foo")
       {:ok, true} = FunWithFlags.enable(:foo)
       IO.puts("(#{name} - #{now()}) enabling foo - done")
 
       :timer.sleep(3000)
+
+      IO.puts(
+        "(#{name} - #{now()}) :ets.whereis(:fun_with_flags_cache) => #{
+          :ets.whereis(:fun_with_flags_cache) |> inspect()
+        }"
+      )
+
+      IO.puts(
+        "(#{name} - #{now()}) FunWithFlags.Store.Cache.get(:foo) => #{
+          FunWithFlags.Store.Cache.get(:foo) |> inspect()
+        }"
+      )
+
+      {:ok, _} = FunWithFlags.Store.Cache.get(:foo)
+
       IO.puts("(#{name} - #{now()}) assert FunWithFlags.enabled?(:foo)")
       assert FunWithFlags.enabled?(:foo)
     end
@@ -20,10 +38,27 @@ defmodule FwfAsyncTest do
 
     test "disables flag" do
       name = "disables flag"
+
       IO.puts("(#{name} - #{now()}) disabling foo")
       {:ok, false} = FunWithFlags.disable(:foo)
       IO.puts("(#{name} - #{now()}) disabling foo - done")
+
       :timer.sleep(2000)
+
+      IO.puts(
+        "(#{name} - #{now()}) :ets.whereis(:fun_with_flags_cache) => #{
+          :ets.whereis(:fun_with_flags_cache) |> inspect()
+        }"
+      )
+
+      IO.puts(
+        "(#{name} - #{now()}) FunWithFlags.Store.Cache.get(:foo) => #{
+          FunWithFlags.Store.Cache.get(:foo) |> inspect()
+        }"
+      )
+
+      {:ok, _} = FunWithFlags.Store.Cache.get(:foo)
+
       IO.puts("(#{name} - #{now()}) refute FunWithFlags.enabled?(:foo)")
       refute FunWithFlags.enabled?(:foo)
 
